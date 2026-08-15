@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import './index.css';
 import { useGameState } from './store/useGameState.jsx';
 import curriculum from './data/curriculum.json';
@@ -129,31 +129,33 @@ function InventoryUI({ onClose }) {
   const { inventory, craftSword, buildHouse } = useGameState();
   
   return (
-    <div style={{
+    <div className="craft-panel slide-in-down" style={{
       position: 'absolute', top: '10%', left: '50%', transform: 'translateX(-50%)',
-      width: '90%', maxWidth: '400px', background: 'rgba(0,0,0,0.9)', color: 'white',
-      borderRadius: '15px', padding: '20px', pointerEvents: 'auto', zIndex: 10,
-      border: '2px solid #555'
+      width: '90%', maxWidth: '400px',
+      padding: '20px', pointerEvents: 'auto', zIndex: 10
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2 style={{ margin: 0 }}>🎒 המלאי שלי</h2>
-        <button onClick={onClose} style={{ background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer' }}>X</button>
+        <h2 style={{ margin: 0, textShadow: '2px 2px 0 #000' }}>🎒 המלאי שלי</h2>
+        <button onClick={onClose} style={{ background: '#d32f2f', color: 'white', border: '2px solid #b71c1c', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer', fontWeight: 'bold' }}>X</button>
       </div>
       
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
-        <div style={{ background: '#333', padding: '10px', borderRadius: '8px', textAlign: 'center' }}>🪵 עץ: {inventory.wood}</div>
-        <div style={{ background: '#333', padding: '10px', borderRadius: '8px', textAlign: 'center' }}>🪨 אבן: {inventory.stone}</div>
-        <div style={{ background: '#333', padding: '10px', borderRadius: '8px', textAlign: 'center' }}>🗡️ חרבות: {inventory.sword}</div>
-        <div style={{ background: '#333', padding: '10px', borderRadius: '8px', textAlign: 'center' }}>🗝️ מפתחות: {inventory.key}</div>
+        <div className="craft-question-box" style={{ padding: '10px', textAlign: 'center', fontSize: '16px' }}>🪵 עץ: {inventory.wood}</div>
+        <div className="craft-question-box" style={{ padding: '10px', textAlign: 'center', fontSize: '16px' }}>🪨 אבן: {inventory.stone}</div>
+        <div className="craft-question-box" style={{ padding: '10px', textAlign: 'center', fontSize: '16px' }}>🥕 אוכל לחיות: {inventory.food}</div>
+        <div className="craft-question-box" style={{ padding: '10px', textAlign: 'center', fontSize: '16px' }}>🗝️ מפתחות: {inventory.key}</div>
+        
         <button 
+          className="craft-option-btn"
           onClick={() => craftSword() ? alert('יצרת חרב!') : alert('חסר עץ או שיש לך כבר חרב')}
-          style={{ padding: '10px', background: '#555', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
-          🗡️ צור חרב (דורש 2 עץ)
+          style={{ padding: '10px', fontSize: '14px' }}>
+          🗡️ צור חרב (2 עץ)
         </button>
         <button 
+          className="craft-option-btn"
           onClick={() => buildHouse() ? alert('בנית בית!') : alert('חסרה אבן או שכבר בנית בית')}
-          style={{ padding: '10px', background: '#555', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
-          🏠 בנה בית (דורש 5 אבנים)
+          style={{ padding: '10px', fontSize: '14px' }}>
+          🏠 בנה בית (5 אבנים)
         </button>
       </div>
     </div>
@@ -311,7 +313,7 @@ function Summary() {
 }
 
 import { Canvas } from '@react-three/fiber';
-import { KeyboardControls } from '@react-three/drei';
+import { useKeyboardControls } from '@react-three/drei';
 import { World } from './World';
 
 function ThreeWorldContainer() {
@@ -327,20 +329,9 @@ function ThreeWorldContainer() {
 
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
-      <KeyboardControls
-        map={[
-          { name: "forward", keys: ["ArrowUp", "w", "W"] },
-          { name: "backward", keys: ["ArrowDown", "s", "S"] },
-          { name: "left", keys: ["ArrowLeft", "a", "A"] },
-          { name: "right", keys: ["ArrowRight", "d", "D"] },
-          { name: "jump", keys: ["Space"] },
-          { name: "interact", keys: ["e", "E"] },
-        ]}
-      >
-        <Canvas shadows camera={{ position: [0, 5, 10], fov: 60 }}>
-          <World skinColor={activeSkin.color} skinSprite={resolvedSprite} />
-        </Canvas>
-      </KeyboardControls>
+      <Canvas shadows camera={{ position: [0, 5, 10], fov: 60 }}>
+        <World skinColor={activeSkin.color} skinSprite={resolvedSprite} />
+      </Canvas>
     </div>
   );
 }
@@ -348,6 +339,18 @@ function ThreeWorldContainer() {
 function App() {
   const { currentScreen, isAnsweringMath } = useGameState();
   const [showInventory, setShowInventory] = useState(false);
+  const [subscribeKeys] = useKeyboardControls();
+
+  useEffect(() => {
+    return subscribeKeys(
+      (state) => state.inventory,
+      (pressed) => {
+        if (pressed && currentScreen === 'game' && !isAnsweringMath) {
+          setShowInventory(prev => !prev);
+        }
+      }
+    );
+  }, [subscribeKeys, currentScreen, isAnsweringMath]);
   
   // Only the active UI screen gets pointer events so the 3D canvas can be clicked
   const pointerEvents = currentScreen === 'home' || currentScreen === 'summary' || currentScreen === 'shop' || isAnsweringMath || showInventory ? 'auto' : 'none';

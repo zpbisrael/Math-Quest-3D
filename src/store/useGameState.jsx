@@ -232,6 +232,8 @@ export const GameStateProvider = ({ children }) => {
       startGame,
       triggerMathBlock,
       addCoins,
+      goToShop,
+      closeMathBlock,
       buyWeeklyPass,
       nextQuestion,
       goHome,
