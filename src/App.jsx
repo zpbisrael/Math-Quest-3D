@@ -353,13 +353,9 @@ function App() {
   const pointerEvents = currentScreen === 'home' || currentScreen === 'summary' || currentScreen === 'shop' || isAnsweringMath || showInventory ? 'auto' : 'none';
 
   return (
-    <KeyboardControls map={keyboardMap}>
+    <>
       {/* 3D Game World */}
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
-        <Canvas shadows camera={{ fov: 45 }}>
-          <World skinColor={skinColor} skinSprite={skinSprite} />
-        </Canvas>
-      </div>
+      <ThreeWorldContainer />
 
       {/* 2D UI Overlay */}
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, pointerEvents }}>
@@ -378,7 +374,7 @@ function App() {
           </div>
         </div>
       </div>
-    </KeyboardControls>
+    </>
   );
 }
 

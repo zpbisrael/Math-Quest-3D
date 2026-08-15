@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Sky } from '@react-three/drei';
 import { Physics, RigidBody } from '@react-three/rapier';
 import { Player } from './Player';
 import { useGameState } from './store/useGameState';
