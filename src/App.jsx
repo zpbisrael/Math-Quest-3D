@@ -269,12 +269,10 @@ function Game() {
                  ? 'תשובה נכונה! 🎉\nהרווחת יהלומים ומשאבים!' 
                  : (usedLifeline ? 'השתמשת בחבל הצלה. לא קיבלת ניקוד.' : 'תשובה שגויה...')}
              </h3>
-             {(!isCorrect || usedLifeline) && (
-               <div style={{ background: '#fff', color: '#000', padding: '15px', borderRadius: '10px', marginBottom: '10px', width: '100%' }}>
-                 <strong>דרך הפתרון:</strong><br />
-                 {questionObj.solution || 'הפתרון המלא יוצג כאן.'}
-               </div>
-             )}
+             <div style={{ background: '#fff', color: '#000', padding: '15px', borderRadius: '10px', marginBottom: '10px', width: '100%' }}>
+               <strong>דרך הפתרון:</strong><br />
+               {questionObj.solution || 'הפתרון המלא יוצג כאן.'}
+             </div>
              <button 
                className="duo-btn duo-btn-primary" 
                onClick={handleNext}
