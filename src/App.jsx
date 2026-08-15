@@ -3,7 +3,7 @@ import './index.css';
 import { useGameState } from './store/useGameState.jsx';
 import curriculum from './data/curriculum.json';
 
-import { generateQuestion } from './utils/questionGenerator';
+// Removed procedural generation
 
 export const AVAILABLE_SKINS = [
   { id: 'default', name: 'רובוט ורוד', cost: 0, color: 'hotpink', spriteBase: null },
@@ -170,7 +170,7 @@ function Game() {
   const [usedLifeline, setUsedLifeline] = useState(false);
   const { currentQuestionIndex, nextQuestion, handleAnswer, handleLifelineAnswer, useKey, coins, addCoins } = useGameState();
 
-  const questionObj = useMemo(() => generateQuestion(currentQuestionIndex), [currentQuestionIndex]);
+  const questionObj = useMemo(() => curriculum[currentQuestionIndex % curriculum.length], [currentQuestionIndex]);
   const currentOptions = questionObj.options;
 
   const handleBuyHint = () => {
@@ -222,7 +222,7 @@ function Game() {
         </h2>
         <div className="exercise-area" style={{ flexDirection: 'column' }}>
           <div className="craft-question-box" style={{ width: '100%', marginBottom: '20px' }}>
-            <p>{questionObj.questionText}</p>
+            <p>{questionObj.question}</p>
           </div>
         </div>
 
