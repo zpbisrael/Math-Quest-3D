@@ -9,7 +9,9 @@ export const GameStateProvider = ({ children }) => {
   // Game session stats
   const [coins, setCoins] = useState(0);
   const [weeklyPassStatus, setWeeklyPassStatus] = useState(false);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
+    return parseInt(localStorage.getItem('mathQuest_questionIndex') || '0', 10);
+  });
   
   // Persistent stats (mocked for Firebase later)
   const [lifetimeCoins, setLifetimeCoins] = useState(150); // Fake initial
@@ -88,7 +90,7 @@ export const GameStateProvider = ({ children }) => {
       let newProgress = progressInBiome + (points / 15) * 100; 
       if (newProgress >= 100) {
         newProgress = 0;
-        setCurrentBiome(prev => (prev + 1) % 3); 
+        setCurrentBiome(prev => Math.min(prev + 1, 2)); 
         setLifetimeCoins(prev => prev + 50);
         setWorldObjects(generateWorldObjects()); // Respawn on biome change
       }
@@ -206,7 +208,11 @@ export const GameStateProvider = ({ children }) => {
       if (sessionScore > highScore) setHighScore(sessionScore);
       setCurrentScreen('summary');
     } else {
-      setCurrentQuestionIndex(prev => prev + 1);
+      setCurrentQuestionIndex(prev => {
+        const next = prev + 1;
+        localStorage.setItem('mathQuest_questionIndex', next);
+        return next;
+      });
       setIsAnsweringMath(false); // Close overlay after answering
     }
   };

@@ -239,7 +239,7 @@ function Game() {
         </div>
         
         {!showFeedback && (
-          <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '15px' }}>
             {!showHint && (
               <button 
                  onClick={handleBuyHint} 
@@ -249,8 +249,8 @@ function Game() {
             )}
             <button 
                onClick={handleLifeline} 
-               style={{ flex: 1, padding: '8px', background: '#e91e63', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
-               🛟 חבל הצלה (הצג פתרון)
+               style={{ width: '100%', padding: '12px', background: '#e91e63', color: 'white', border: '3px solid #c2185b', borderRadius: '12px', cursor: 'pointer', fontSize: '18px', fontWeight: '900', marginTop: '10px', textShadow: '1px 1px 0px #000', boxShadow: '0 4px 0 #c2185b' }}>
+               🛟 אל תנחש סתם! לחץ כאן כדי לראות את דרך הפתרון (ללא ניקוד)
             </button>
           </div>
         )}
