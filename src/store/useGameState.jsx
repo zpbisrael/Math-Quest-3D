@@ -83,14 +83,14 @@ export const GameStateProvider = ({ children }) => {
          food: prev.food + (Math.random() > 0.5 ? 1 : 0)
       })); 
       
-      let points = 1.5;
-      if (difficulty === 'easy') points = 1;
-      if (difficulty === 'hard') points = 3;
+      let points = 25; // default medium: 4 questions to advance
+      if (difficulty === 'easy') points = 20; // 5 questions to advance
+      if (difficulty === 'hard') points = 34; // 3 questions to advance
       
-      let newProgress = progressInBiome + (points / 15) * 100; 
+      let newProgress = progressInBiome + points; 
       if (newProgress >= 100) {
         newProgress = 0;
-        setCurrentBiome(prev => Math.min(prev + 1, 2)); 
+        setCurrentBiome(prev => Math.min(prev + 1, 14)); // Up to 15 biomes
         setLifetimeCoins(prev => prev + 50);
         setWorldObjects(generateWorldObjects()); // Respawn on biome change
       }

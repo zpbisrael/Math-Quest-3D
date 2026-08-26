@@ -194,7 +194,7 @@ function Game() {
     setIsCorrect(correct);
     setShowFeedback(true);
     
-    handleAnswer(correct);
+    handleAnswer(correct, questionObj.difficulty);
   };
 
   const handleLifeline = () => {

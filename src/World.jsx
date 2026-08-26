@@ -39,7 +39,19 @@ export function World({ skinColor, skinSprite }) {
   const biomes = {
     0: { grass: '#4CAF50', dirt: '#795548', wood: '#5D4037', leaves: '#2E7D32' }, // Forest
     1: { grass: '#EDC9AF', dirt: '#C2B280', wood: '#8B5A2B', leaves: '#DAA520' }, // Desert
-    2: { grass: '#4A4A4A', dirt: '#212121', wood: '#8B0000', leaves: '#FF4500' }  // Lava/Volcano
+    2: { grass: '#4A4A4A', dirt: '#212121', wood: '#8B0000', leaves: '#FF4500' }, // Volcano
+    3: { grass: '#E0F7FA', dirt: '#B2EBF2', wood: '#4DD0E1', leaves: '#00BCD4' }, // Ice/Snow
+    4: { grass: '#E1BEE7', dirt: '#CE93D8', wood: '#AB47BC', leaves: '#8E24AA' }, // Crystal/Purple
+    5: { grass: '#F0F4C3', dirt: '#DCE775', wood: '#C0CA33', leaves: '#9E9D24' }, // Swamp
+    6: { grass: '#FFCC80', dirt: '#FFB74D', wood: '#FF9800', leaves: '#F57C00' }, // Autumn
+    7: { grass: '#BCAAA4', dirt: '#A1887F', wood: '#795548', leaves: '#5D4037' }, // Badlands
+    8: { grass: '#C5CAE9', dirt: '#9FA8DA', wood: '#7986CB', leaves: '#5C6BC0' }, // Twilight/Blue
+    9: { grass: '#FFCDD2', dirt: '#EF9A9A', wood: '#E57373', leaves: '#EF5350' }, // Cherry Blossom
+    10: { grass: '#CFD8DC', dirt: '#B0BEC5', wood: '#90A4AE', leaves: '#78909C' }, // Stone Peaks
+    11: { grass: '#F8BBD0', dirt: '#F48FB1', wood: '#F06292', leaves: '#EC407A' }, // Candy Land
+    12: { grass: '#B2DFDB', dirt: '#80CBC4', wood: '#4DB6AC', leaves: '#26A69A' }, // Toxic Jungle
+    13: { grass: '#D7CCC8', dirt: '#BCAAA4', wood: '#A1887F', leaves: '#8D6E63' }, // Dead Woods
+    14: { grass: '#FFF9C4', dirt: '#FFF59D', wood: '#FFF176', leaves: '#FFEE58' }  // Golden Realm
   };
   const palette = biomes[currentBiome] || biomes[0];
 
