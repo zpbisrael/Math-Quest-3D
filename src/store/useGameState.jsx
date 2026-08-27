@@ -90,12 +90,35 @@ export const GameStateProvider = ({ children }) => {
 
   const [worldObjects, setWorldObjects] = useState(generateWorldObjects());
 
+  const [analytics, setAnalytics] = useState(() => {
+    const saved = localStorage.getItem('mathQuest_analytics');
+    if (saved) return JSON.parse(saved);
+    return {};
+  });
+
+  const updateAnalytics = (questionText, isCorrect) => {
+    setAnalytics(prev => {
+      const current = prev[questionText] || { attempts: 0, correct: 0, mastery: 0 };
+      const newAttempts = current.attempts + 1;
+      const newCorrect = current.correct + (isCorrect ? 1 : 0);
+      const mastery = Math.round((newCorrect / newAttempts) * 100);
+      const newState = {
+        ...prev,
+        [questionText]: { attempts: newAttempts, correct: newCorrect, mastery }
+      };
+      localStorage.setItem('mathQuest_analytics', JSON.stringify(newState));
+      return newState;
+    });
+  };
+
   const handleLifelineAnswer = () => {
     // Lifeline preserves streak (if we had one) and doesn't give points or penalty.
     // It's essentially a safe pass.
   };
 
-  const handleAnswer = (isCorrect, difficulty = 'medium') => {
+  const handleAnswer = (isCorrect, difficulty = 'medium', questionText = '') => {
+    if (questionText) updateAnalytics(questionText, isCorrect);
+    
     if (isCorrect) {
       setLifetimeCoins(prev => prev + 10);
       setSessionScore(prev => prev + 1);
@@ -245,6 +268,7 @@ export const GameStateProvider = ({ children }) => {
 
   const goHome = () => setCurrentScreen('home');
   const goToShop = () => setCurrentScreen('shop');
+  const goToDashboard = () => setCurrentScreen('dashboard');
   const closeMathBlock = () => setIsAnsweringMath(false);
 
   return (
@@ -265,6 +289,7 @@ export const GameStateProvider = ({ children }) => {
       triggerMathBlock,
       addCoins,
       goToShop,
+      goToDashboard,
       closeMathBlock,
       buyWeeklyPass,
       nextQuestion,
@@ -280,7 +305,8 @@ export const GameStateProvider = ({ children }) => {
       useKey,
       feedAnimal,
       buildFence,
-      worldObjects
+      worldObjects,
+      analytics
     }}>
       {children}
     </GameStateContext.Provider>
