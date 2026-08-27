@@ -89,6 +89,7 @@ export const GameStateProvider = ({ children }) => {
   };
 
   const [worldObjects, setWorldObjects] = useState(generateWorldObjects());
+  const [questionStartTime, setQuestionStartTime] = useState(0);
 
   const [analytics, setAnalytics] = useState(() => {
     const saved = localStorage.getItem('mathQuest_analytics');
@@ -96,15 +97,25 @@ export const GameStateProvider = ({ children }) => {
     return {};
   });
 
-  const updateAnalytics = (questionText, isCorrect) => {
+  const updateAnalytics = (questionText, isCorrect, timeTakenMs) => {
     setAnalytics(prev => {
-      const current = prev[questionText] || { attempts: 0, correct: 0, mastery: 0 };
+      const current = prev[questionText] || { attempts: 0, correct: 0, mastery: 0, flags: 0 };
       const newAttempts = current.attempts + 1;
-      const newCorrect = current.correct + (isCorrect ? 1 : 0);
-      const mastery = Math.round((newCorrect / newAttempts) * 100);
+      let newCorrect = current.correct + (isCorrect ? 1 : 0);
+      
+      // If answered correctly but way too fast (under 1.5 seconds), flag it as blind memorization
+      let newFlags = current.flags || 0;
+      if (isCorrect && timeTakenMs < 1500) {
+         newFlags += 1;
+      }
+      
+      // Calculate mastery (penalize for blind memorization flags)
+      let mastery = Math.round((newCorrect / newAttempts) * 100);
+      mastery = Math.max(0, mastery - (newFlags * 20)); // Reduce 20% mastery per blind guess
+      
       const newState = {
         ...prev,
-        [questionText]: { attempts: newAttempts, correct: newCorrect, mastery }
+        [questionText]: { attempts: newAttempts, correct: newCorrect, mastery, flags: newFlags }
       };
       localStorage.setItem('mathQuest_analytics', JSON.stringify(newState));
       return newState;
@@ -117,7 +128,8 @@ export const GameStateProvider = ({ children }) => {
   };
 
   const handleAnswer = (isCorrect, difficulty = 'medium', questionText = '') => {
-    if (questionText) updateAnalytics(questionText, isCorrect);
+    const timeTakenMs = Date.now() - questionStartTime;
+    if (questionText) updateAnalytics(questionText, isCorrect, timeTakenMs);
     
     if (isCorrect) {
       setLifetimeCoins(prev => prev + 10);
@@ -232,6 +244,7 @@ export const GameStateProvider = ({ children }) => {
   
   const triggerMathBlock = () => {
     setIsAnsweringMath(true);
+    setQuestionStartTime(Date.now());
   };
 
   const addCoins = (amount) => {

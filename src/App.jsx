@@ -37,14 +37,9 @@ function Home() {
         <button className="duo-btn duo-btn-primary play-btn bounce" onClick={startGame}>
           התחל משחק!
         </button>
-        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-          <button className="duo-btn duo-btn-secondary" style={{ flex: 1 }} onClick={goToShop}>
-            חנות סקינים 🛒
-          </button>
-          <button className="duo-btn duo-btn-secondary" style={{ flex: 1, backgroundColor: '#4caf50', color: 'white', borderColor: '#388e3c' }} onClick={goToDashboard}>
-            מעקב מורה 📊
-          </button>
-        </div>
+        <button className="duo-btn duo-btn-secondary" style={{marginTop: '10px'}} onClick={goToShop}>
+          חנות סקינים 🛒
+        </button>
       </div>
     </div>
   );
@@ -426,9 +421,20 @@ function ThreeWorldContainer() {
 import { TeacherDashboard } from './TeacherDashboard';
 
 function App() {
-  const { currentScreen, isAnsweringMath } = useGameState();
+  const { currentScreen, isAnsweringMath, goToDashboard, goHome } = useGameState();
   const [showInventory, setShowInventory] = useState(false);
   const [subscribeKeys] = useKeyboardControls();
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.shiftKey && e.key.toLowerCase() === 't') {
+        if (currentScreen === 'dashboard') goHome();
+        else goToDashboard();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentScreen, goToDashboard, goHome]);
 
   useEffect(() => {
     return subscribeKeys(
