@@ -2,6 +2,17 @@ import React, { createContext, useState, useContext } from 'react';
 
 const GameStateContext = createContext();
 
+import curriculum from '../data/curriculum.json';
+
+const getShuffledIndices = () => {
+  const arr = Array.from({length: curriculum.length}, (_, i) => i);
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
+
 export const GameStateProvider = ({ children }) => {
   // Navigation
   const [currentScreen, setCurrentScreen] = useState('home'); // 'home', 'game', 'summary'
@@ -9,9 +20,21 @@ export const GameStateProvider = ({ children }) => {
   // Game session stats
   const [coins, setCoins] = useState(0);
   const [weeklyPassStatus, setWeeklyPassStatus] = useState(false);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
-    return parseInt(localStorage.getItem('mathQuest_questionIndex') || '0', 10);
+  
+  const [availableQuestions, setAvailableQuestions] = useState(() => {
+    const saved = localStorage.getItem('mathQuest_availableQuestions');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {}
+    }
+    const newShuffle = getShuffledIndices();
+    localStorage.setItem('mathQuest_availableQuestions', JSON.stringify(newShuffle));
+    return newShuffle;
   });
+  
+  const currentQuestionIndex = availableQuestions[0] !== undefined ? availableQuestions[0] : 0;
   
   // Persistent stats (mocked for Firebase later)
   const [lifetimeCoins, setLifetimeCoins] = useState(150); // Fake initial
@@ -208,10 +231,13 @@ export const GameStateProvider = ({ children }) => {
       if (sessionScore > highScore) setHighScore(sessionScore);
       setCurrentScreen('summary');
     } else {
-      setCurrentQuestionIndex(prev => {
-        const next = prev + 1;
-        localStorage.setItem('mathQuest_questionIndex', next);
-        return next;
+      setAvailableQuestions(prev => {
+        let nextArr = prev.slice(1);
+        if (nextArr.length === 0) {
+          nextArr = getShuffledIndices();
+        }
+        localStorage.setItem('mathQuest_availableQuestions', JSON.stringify(nextArr));
+        return nextArr;
       });
       setIsAnsweringMath(false); // Close overlay after answering
     }
