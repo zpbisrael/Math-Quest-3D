@@ -14,7 +14,7 @@ export const AVAILABLE_SKINS = [
 ];
 
 function Home() {
-  const { lifetimeCoins, highScore, startGame, goToShop } = useGameState();
+  const { lifetimeCoins, highScore, startGame, goToShop, goToDashboard } = useGameState();
   return (
     <div className="app-container home-screen">
       <div className="home-content fade-in">
@@ -37,9 +37,14 @@ function Home() {
         <button className="duo-btn duo-btn-primary play-btn bounce" onClick={startGame}>
           התחל משחק!
         </button>
-        <button className="duo-btn duo-btn-secondary" style={{marginTop: '10px'}} onClick={goToShop}>
-          חנות סקינים 🛒
-        </button>
+        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+          <button className="duo-btn duo-btn-secondary" style={{ flex: 1 }} onClick={goToShop}>
+            חנות סקינים 🛒
+          </button>
+          <button className="duo-btn duo-btn-secondary" style={{ flex: 1, backgroundColor: '#4caf50', color: 'white', borderColor: '#388e3c' }} onClick={goToDashboard}>
+            מעקב מורה 📊
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -418,6 +423,8 @@ function ThreeWorldContainer() {
   );
 }
 
+import { TeacherDashboard } from './TeacherDashboard';
+
 function App() {
   const { currentScreen, isAnsweringMath } = useGameState();
   const [showInventory, setShowInventory] = useState(false);
@@ -434,20 +441,17 @@ function App() {
     );
   }, [subscribeKeys, currentScreen, isAnsweringMath]);
   
-  // Only the active UI screen gets pointer events so the 3D canvas can be clicked
-  const pointerEvents = currentScreen === 'home' || currentScreen === 'summary' || currentScreen === 'shop' || isAnsweringMath || showInventory ? 'auto' : 'none';
+  const pointerEvents = currentScreen === 'home' || currentScreen === 'summary' || currentScreen === 'shop' || currentScreen === 'dashboard' || isAnsweringMath || showInventory ? 'auto' : 'none';
 
   return (
     <>
-      {/* 3D Game World */}
       <ThreeWorldContainer />
-
-      {/* 2D UI Overlay */}
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, pointerEvents }}>
         <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}>
           <div style={{ width: '100%', maxWidth: '600px', height: '100%', display: 'flex', flexDirection: 'column', pointerEvents: 'auto' }}>
             {currentScreen === 'home' && <Home />}
             {currentScreen === 'shop' && <Shop />}
+            {currentScreen === 'dashboard' && <TeacherDashboard />}
             {currentScreen === 'game' && (
               <div className="app-container" style={{ pointerEvents: 'none' }}>
                 <TopBar onToggleInventory={() => setShowInventory(!showInventory)} />

@@ -201,17 +201,17 @@ export function Player({ skinColor = "hotpink", skinSprite = null }) {
     let nextVelY = currentLinvel.y;
     
     // Jump logic
-    if (jump && Math.abs(currentLinvel.y) < 0.1) {
-      nextVelY = 8;
+    if (jump && Math.abs(currentLinvel.y) < 0.2) {
+      nextVelY = 12; // Higher jump to escape fences
     }
     
     ref.current.setLinvel({ x: direction.x, y: nextVelY, z: direction.z }, true);
     
     const pos = ref.current.translation();
     
-    // Fall protection
-    if (pos.y < -5) {
-      ref.current.setTranslation({ x: 0, y: 10, z: 0 }, true);
+    // Fall protection and unstuck
+    if (pos.y < -2) {
+      ref.current.setTranslation({ x: 0, y: 15, z: 0 }, true);
       ref.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
       return;
     }
