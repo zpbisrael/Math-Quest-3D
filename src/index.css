@@ -378,3 +378,6 @@ body {
   border-color: #2E7D32;
 }
 
+
+.mobile-only { display: none !important; }
+@media (max-width: 768px) { .mobile-only { display: flex !important; } }

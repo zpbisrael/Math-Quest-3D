@@ -314,6 +314,90 @@ import { Canvas } from '@react-three/fiber';
 import { useKeyboardControls } from '@react-three/drei';
 import { World } from './World';
 
+function MobileControls() {
+  const simulateKey = (code, type) => {
+    window.dispatchEvent(new KeyboardEvent(type, { code }));
+  };
+  const btnStyle = {
+    background: 'rgba(255, 255, 255, 0.4)',
+    border: '2px solid rgba(255, 255, 255, 0.8)',
+    borderRadius: '50%',
+    width: '50px',
+    height: '50px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: '20px',
+    userSelect: 'none',
+    touchAction: 'none'
+  };
+  return (
+    <div className="mobile-only" style={{ position: 'absolute', bottom: '20px', left: '20px', pointerEvents: 'auto', flexDirection: 'column', alignItems: 'center', gap: '5px', zIndex: 100 }}>
+       <div 
+         style={btnStyle} 
+         onPointerDown={(e) => { e.preventDefault(); simulateKey('KeyW', 'keydown'); }} 
+         onPointerUp={(e) => { e.preventDefault(); simulateKey('KeyW', 'keyup'); }}
+         onPointerLeave={() => simulateKey('KeyW', 'keyup')}
+       >⬆️</div>
+       <div style={{ display: 'flex', gap: '5px' }}>
+         <div 
+           style={btnStyle} 
+           onPointerDown={(e) => { e.preventDefault(); simulateKey('KeyA', 'keydown'); }} 
+           onPointerUp={(e) => { e.preventDefault(); simulateKey('KeyA', 'keyup'); }}
+           onPointerLeave={() => simulateKey('KeyA', 'keyup')}
+         >⬅️</div>
+         <div 
+           style={btnStyle} 
+           onPointerDown={(e) => { e.preventDefault(); simulateKey('KeyS', 'keydown'); }} 
+           onPointerUp={(e) => { e.preventDefault(); simulateKey('KeyS', 'keyup'); }}
+           onPointerLeave={() => simulateKey('KeyS', 'keyup')}
+         >⬇️</div>
+         <div 
+           style={btnStyle} 
+           onPointerDown={(e) => { e.preventDefault(); simulateKey('KeyD', 'keydown'); }} 
+           onPointerUp={(e) => { e.preventDefault(); simulateKey('KeyD', 'keyup'); }}
+           onPointerLeave={() => simulateKey('KeyD', 'keyup')}
+         >➡️</div>
+       </div>
+    </div>
+  )
+}
+
+function MobileActionButtons() {
+  const simulateKey = (code, type) => {
+    window.dispatchEvent(new KeyboardEvent(type, { code }));
+  };
+  const btnStyle = {
+    background: 'rgba(255, 255, 255, 0.4)',
+    border: '2px solid rgba(255, 255, 255, 0.8)',
+    borderRadius: '50%',
+    width: '60px',
+    height: '60px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: '24px',
+    userSelect: 'none',
+    touchAction: 'none'
+  };
+  return (
+    <div className="mobile-only" style={{ position: 'absolute', bottom: '20px', right: '20px', pointerEvents: 'auto', display: 'flex', gap: '15px', zIndex: 100 }}>
+       <div 
+         style={btnStyle} 
+         onPointerDown={(e) => { e.preventDefault(); simulateKey('KeyE', 'keydown'); }} 
+         onPointerUp={(e) => { e.preventDefault(); simulateKey('KeyE', 'keyup'); }}
+         onPointerLeave={() => simulateKey('KeyE', 'keyup')}
+       >🎯</div>
+       <div 
+         style={btnStyle} 
+         onPointerDown={(e) => { e.preventDefault(); simulateKey('Space', 'keydown'); }} 
+         onPointerUp={(e) => { e.preventDefault(); simulateKey('Space', 'keyup'); }}
+         onPointerLeave={() => simulateKey('Space', 'keyup')}
+       >🦘</div>
+    </div>
+  )
+}
+
 function ThreeWorldContainer() {
   const { currentSkin, currentBiome } = useGameState();
   const activeSkin = AVAILABLE_SKINS.find(s => s.id === currentSkin) || AVAILABLE_SKINS[0];
@@ -367,8 +451,10 @@ function App() {
             {currentScreen === 'game' && (
               <div className="app-container" style={{ pointerEvents: 'none' }}>
                 <TopBar onToggleInventory={() => setShowInventory(!showInventory)} />
-                {isAnsweringMath ? <Game /> : <div className="crosshair" style={{position:'absolute', top:'50%', left:'50%', transform:'translate(-50%, -50%)', color:'white', fontSize:'24px'}}>+</div>}
+                {isAnsweringMath ? <Game /> : <div className="crosshair" style={{position:'absolute', top:'50%', left:'50%', transform:'translate(-50%, -50%)', color:'white', fontSize:'24px', pointerEvents: 'none'}}>+</div>}
                 {showInventory && <InventoryUI onClose={() => setShowInventory(false)} />}
+                {!isAnsweringMath && !showInventory && <MobileControls />}
+                {!isAnsweringMath && !showInventory && <MobileActionButtons />}
               </div>
             )}
             {currentScreen === 'summary' && <Summary />}
