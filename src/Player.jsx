@@ -246,7 +246,7 @@ export function Player({ skinColor = "hotpink", skinSprite = null }) {
       }
     }
 
-    if (nearBlock !== showPrompt) setShowPrompt(nearBlock);
+    if (!!nearBlock !== showPrompt) setShowPrompt(!!nearBlock);
     if (nearRock !== showRockPrompt) setShowRockPrompt(nearRock);
     if (nearAnimal !== showAnimalPrompt) setShowAnimalPrompt(nearAnimal);
 
@@ -257,7 +257,7 @@ export function Player({ skinColor = "hotpink", skinSprite = null }) {
         if (now - lastMineTime > 500) { // small cooldown
           setLastMineTime(now);
           if (nearBlock) {
-            triggerMathBlock();
+            triggerMathBlock(nearBlock.id);
           } else if (nearAnimal && inventory.food > 0) {
             const fed = feedAnimal();
             if (fed) alert("האכלת חיה וקיבלת 15 יהלומים!");

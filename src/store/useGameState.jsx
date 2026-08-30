@@ -238,13 +238,18 @@ export const GameStateProvider = ({ children }) => {
     setCurrentScreen('game');
     setCoins(0);
     setSessionScore(0);
-    setCurrentQuestionIndex(0);
     setIsAnsweringMath(false);
   };
   
-  const triggerMathBlock = () => {
+  const triggerMathBlock = (blockId) => {
     setIsAnsweringMath(true);
     setQuestionStartTime(Date.now());
+    if (blockId !== undefined) {
+      setWorldObjects(prev => ({
+        ...prev,
+        blocks: prev.blocks.filter(b => b.id !== blockId)
+      }));
+    }
   };
 
   const addCoins = (amount) => {

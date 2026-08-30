@@ -214,24 +214,25 @@ function Game() {
   };
 
   return (
-    <div style={{ pointerEvents: 'none', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+    <div style={{ pointerEvents: 'none', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 
-      <main className="craft-panel slide-in-right" style={{ pointerEvents: 'auto', padding: '20px', margin: '20px' }}>
-        <h2 style={{ textShadow: '2px 2px 0 #000', marginBottom: '15px', borderBottom: '2px solid rgba(255,255,255,0.2)', paddingBottom: '10px' }}>
-           שאלה {currentQuestionIndex + 1} ({questionObj.category})
+      <main className="craft-panel slide-in-right" style={{ pointerEvents: 'auto', padding: '15px', margin: '10px', width: '95%', maxWidth: '500px', maxHeight: '85vh', overflowY: 'auto' }}>
+        <h2 style={{ textShadow: '2px 2px 0 #000', marginBottom: '15px', borderBottom: '2px solid rgba(255,255,255,0.2)', paddingBottom: '10px', fontSize: '1.2rem' }}>
+           שאלה {sessionScore + 1} ({questionObj.category})
         </h2>
         <div className="exercise-area" style={{ flexDirection: 'column' }}>
-          <div className="craft-question-box" style={{ width: '100%', marginBottom: '20px' }}>
+          <div className="craft-question-box" style={{ width: '100%', marginBottom: '15px', fontSize: '14px', lineHeight: '1.5' }}>
             <p>{questionObj.question}</p>
           </div>
         </div>
 
-        <div className="options-area" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+        <div className="options-area" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px' }}>
           {currentOptions.map((option, index) => (
             <button
               key={index}
               className={`craft-option-btn ${selectedOption === index ? 'craft-option-selected' : ''}`}
               onClick={() => handleOptionClick(index)}
+              style={{ fontSize: '13px', padding: '10px' }}
             >
               {option}
             </button>
