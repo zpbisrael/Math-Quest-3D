@@ -168,7 +168,7 @@ function Game() {
   const [isCorrect, setIsCorrect] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [usedLifeline, setUsedLifeline] = useState(false);
-  const { currentQuestionIndex, nextQuestion, handleAnswer, handleLifelineAnswer, useKey, coins, addCoins } = useGameState();
+  const { currentQuestionIndex, nextQuestion, handleAnswer, handleLifelineAnswer, useKey, coins, addCoins, sessionScore } = useGameState();
 
   const questionObj = useMemo(() => curriculum[currentQuestionIndex % curriculum.length], [currentQuestionIndex]);
   const currentOptions = questionObj.options;
@@ -194,7 +194,7 @@ function Game() {
     setIsCorrect(correct);
     setShowFeedback(true);
     
-    handleAnswer(correct, questionObj.difficulty);
+    handleAnswer(correct, questionObj.difficulty, questionObj.question);
   };
 
   const handleLifeline = () => {
